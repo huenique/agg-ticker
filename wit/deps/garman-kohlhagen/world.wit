@@ -1,0 +1,27 @@
+package jabratech:component-garman-kohlhagen;
+
+interface garman-kohlhagen {
+    calculate-call: func(
+        spot: f64, 
+        strike: f64, 
+        ttm: f64, 
+        r2: f64, 
+        r1: f64, 
+        iv: f64
+    ) -> result<f64, string>;
+
+    calculate-put: func(
+        spot: f64, 
+        strike: f64, 
+        ttm: f64, 
+        r2: f64, 
+        r1: f64, 
+        iv: f64
+    ) -> result<f64, string>;
+}
+
+world component-garman-kohlhagen {
+    
+    export garman-kohlhagen;
+
+}

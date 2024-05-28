@@ -1,0 +1,8 @@
+package jabratech:component-agg-ticker;
+
+world component-agg-ticker {
+    import wasi:logging/logging;
+    import wasmcloud:messaging/consumer@0.2.0;
+
+    export agg-ticker;
+}

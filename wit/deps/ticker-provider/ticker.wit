@@ -1,0 +1,125 @@
+interface ticker {
+    use jabratech:common/types.{currency, greeks, instrument-kind};
+
+    /**
+     * Record representing the ticker information of a financial instrument.
+     */
+    record ticker {
+
+        /**
+         * The name of the instrument.
+         */
+        instrument-name: string,
+
+        /**
+         * The ask implied volatility.
+         */
+        ask-iv: f64,
+
+        /**
+         * The best ask amount.
+         */
+        best-ask-amount: f64,
+
+        /**
+         * The best ask price.
+         */
+        best-ask-price: f64,
+
+        /**
+         * The bid implied volatility.
+         */
+        bid-iv: f64,
+
+        /**
+         * The best bid amount.
+         */
+        best-bid-amount: f64,
+
+        /**
+         * The best bid price.
+         */
+        best-bid-price: f64,
+
+        /**
+         * The index price of the instrument.
+         */
+        index-price: f64,
+
+        // General fields applicable to all instruments
+        /**
+         * The price for the last trade.
+         */
+        last-price: f64,
+
+        /**
+         * The mark price of the instrument.
+         */
+        mark-price: f64,
+
+        /**
+         * The number of open contracts.
+         */
+        open-interest: f64,
+
+        /**
+         * The state of the instrument. Can be "open" or "closed".
+         */
+        state: string,
+
+        /**
+         * Timestamp of the ticker feed snapshot.
+         */
+        timestamp: u64,
+
+
+        /**
+         * Optionally includes the Greek metrics of the instrument.
+         */
+        greeks: option<greeks>,
+
+        /**
+         * Optionally includes the interest rate of the instrument.
+         */
+        interest-rate: option<f64>,
+
+        /**
+         * Optionally includes the mark implied volatility.
+         */
+        mark-iv: option<f64>,
+
+        /**
+         * Optionally includes the delivery price for futures.
+         */
+        delivery-price: option<f64>,
+
+        // Fields specific to perpetual contracts
+        /**
+         * Optionally includes the current funding rate for perpetual contracts.
+         */
+        current-funding: option<f64>,
+
+        /**
+         * Optionally includes the interest value used to calculate realized funding in positions.
+         */
+        interest-value: option<f64>,
+
+    }
+
+    /**
+     * Fetches the ticker information for a specific instrument.
+     *
+     * @param instrument-name The name of the instrument to fetch the ticker for.
+     * @return A result containing the ticker information or an error string.
+     */
+    get-ticker: func(instrument-name: string) -> result<ticker, string>;
+
+    /**
+     * Fetches the ticker information for all instruments of a specific currency and instrument kind.
+     *
+     * @param currency The currency to fetch tickers for.
+     * @param instrument-kind The kind of instrument to fetch tickers for.
+     * @return A result containing a list of ticker information or an error string.
+     */
+    get-tickers: func(currency: currency, instrument-kind: instrument-kind) -> result<list<ticker>, string>;
+}

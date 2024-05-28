@@ -1,0 +1,133 @@
+package jabratech:common;
+
+// NOTE: As these types grow, we need to split them into multiple files
+interface types {
+
+    /**
+     * Represents different types of trading venues.
+     * - otc: Over-the-counter trading venue, identified by a string.
+     * - c-exchange: Centralized exchange, identified by a string.
+     * - d-exchange: Decentralized exchange, identified by a string.
+     */
+    variant venue-type {
+        otc(string),
+        c-exchange(string),
+        d-exchange(string),
+    }
+
+    /**
+     * Enum representing different trading mechanisms.
+     * - rfq: Request for Quote
+     * - rfs: Request for Stream
+     * - clob: Central Limit Order Book
+     */
+    enum trading-mechanism {
+        rfq,
+        rfs,
+        clob
+    }
+
+    /**
+     * Record representing a currency.
+     * - ticker: The ticker symbol of the currency (e.g., "USD", "BTC").
+     * - name: Optional full name of the currency (e.g., "US Dollar", "Bitcoin").
+     * - is-active: Optional flag indicating whether the currency is active.
+     * - decimals: Optional number of decimal places used for the currency.
+     * - display-scale: Optional display scale for the currency.
+     */
+    record currency {
+        ticker: string,
+        name: option<string>,
+        is-active: option<bool>,
+        decimals: option<s8>,
+        display-scale: option<s8>,
+    }
+
+    /**
+     * Record representing a trading pair.
+     * - name: The name of the trading pair (e.g., "BTC/USD").
+     * - base: Optional base currency of the trading pair.
+     * - quote: Optional quote currency of the trading pair.
+     * - is-active: Optional flag indicating whether the trading pair is active.
+     */
+    record pair {
+        name: string,
+        base: option<currency>,
+        quote: option<currency>,
+        is-active: option<bool>,
+    }
+
+    /**
+     * Record representing the Greek metrics of an option.
+     * - delta: Optional delta value.
+     * - gamma: Optional gamma value.
+     * - theta: Optional theta value.
+     * - vega: Optional vega value.
+     * - rho: Optional rho value.
+     */
+    record greeks {
+        delta: option<f64>,
+        gamma: option<f64>,
+        theta: option<f64>,
+        vega: option<f64>,
+        rho: option<f64>,
+    }
+
+    /**
+     * Enum representing the type of liquidity.
+     * - maker: Liquidity provider.
+     * - taker: Liquidity taker.
+     */
+    enum liquidity-type {
+        maker,
+        taker
+    }
+
+    /**
+     * Enum representing the direction of a trade.
+     * - buy: Buying direction.
+     * - sell: Selling direction.
+     * - zero: Neutral or no position.
+     */
+    enum side {
+        buy,
+        sell,
+        zero
+    }
+
+    /**
+     * Enum representing different kinds of financial instruments.
+     * - spot: Spot market instrument.
+     * - fut: Futures contract.
+     * - perp: Perpetual futures contract.
+     * - opt: Options contract.
+     */
+    enum instrument-kind {
+        spot,
+        fut,
+        perp,
+        opt
+    }
+
+    /**
+     * Enum representing the type of an options contract.
+     * - c: Call option.
+     * - p: Put option.
+     */
+    enum option-kind {
+        c,
+        p
+    }
+
+    /**
+     * Enum representing the state of an order.
+     * - open: Order is currently open.
+     * - closed: Order has been closed.
+     * - cancelled: Order has been cancelled.
+     */
+    enum order-state {
+        open,
+        closed,
+        cancelled
+    }
+}

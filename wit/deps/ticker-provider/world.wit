@@ -1,0 +1,5 @@
+package jabratech:provider-ticker;
+
+world provider-ticker {
+    export ticker;
+}

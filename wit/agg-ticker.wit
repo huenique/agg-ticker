@@ -1,0 +1,10 @@
+interface agg-ticker {
+
+    record aggregated-tickers {
+        // TODO: Add these fields for single aggregation
+        instrument-name: string,
+    }
+
+    aggregate: func(instrument-name: string) -> result<aggregated-tickers, string>;
+    aggregate-and-publish: func(instrument-name: string);
+}

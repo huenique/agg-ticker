@@ -1,0 +1,23 @@
+interface otc-option-quoter {
+    use jabratech:common/types.{option-kind, side};
+
+    record request-manual-quote {
+        instrument-name: string,
+        amount: f64,
+        option-kind: option-kind,
+        side: side,
+        spot: f64,
+        iv: f64,
+        r2: f64
+    }
+
+    record request-auto-quote {
+        instrument-name: string,
+        amount: f64,
+        option-kind: option-kind,
+        side: side
+    }
+
+    auto-quote: func(request: request-auto-quote) -> result<f64, string>;
+    manual-quote: func(request: request-manual-quote) -> result<f64, string>;
+}
