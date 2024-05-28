@@ -34,6 +34,11 @@ deps = ["common", "garman-kohlhagen", "index-provider", "iv-calculator-csi", "r2
 sha256 = "aecb3a63cec03b5b3a89bbc0d04ef00a6970a798d5546cc844424f507929f899"
 sha512 = "92404d43fcf5f049d8fb839267656316089b5c51e9f02be4abf4713a0bfb7a7334d90054829cad269e7de27fe4769f532e78e8118dfbb13659ca183d7571f3f6"
 
+[random]
+url = "https://github.com/WebAssembly/wasi-random/archive/main.tar.gz"
+sha256 = "7371d03c037d924caba2587fb2e7c5773a0d3c5fcecbf7971e0e0ba57973c53d"
+sha512 = "964c4e8925a53078e4d94ba907b54f89a0b7e154f46823a505391471466c17f53c8692682e5c85771712acd88b348686173fc07c53a3cfe3d301b8cd8ddd0de4"
+
 [ticker-provider]
 url = "https://github.com/jabratech/wit-ticker-provider/archive/main.tar.gz"
 sha256 = "4f20218e2ca3994eec14d58fee99d054ec4aa08f33a09f0f29fb9718de43d2b6"

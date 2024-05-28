@@ -1,8 +1,13 @@
 interface agg-ticker {
 
     record aggregated-tickers {
-        // TODO: Add these fields for single aggregation
         instrument-name: string,
+        strike: f64,
+        kind: string,
+        delta: f64,
+        bids: list<tuple<f64, f64, f64, f64, string>>,
+        asks: list<tuple<f64, f64, f64, f64, string>>,
+        timestamp: u64,
     }
 
     aggregate: func(instrument-name: string) -> result<aggregated-tickers, string>;
