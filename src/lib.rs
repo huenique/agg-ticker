@@ -23,16 +23,17 @@ struct AggTicker;
 
 impl Guest for AggTicker {
     fn aggregate(instrument_name: String) -> Result<AggregatedTickers, String> {
-        let tickers = get_ticker_data_from_provider(&instrument_name)?;
-        let agg_tickers = aggregate_tickers(instrument_name.clone(), tickers);
+        let (tickers, instrument_parts) = get_ticker_data_from_provider(&instrument_name)?;
+        let agg_tickers = aggregate_tickers(instrument_name.clone(), tickers, instrument_parts);
 
         Ok(agg_tickers)
     }
 
     fn aggregate_and_publish(instrument_name: String) {
         match get_ticker_data_from_provider(&instrument_name) {
-            Ok(tickers) => {
-                let agg_tickers = aggregate_tickers(instrument_name.clone(), tickers);
+            Ok((tickers, instrument_parts)) => {
+                let agg_tickers =
+                    aggregate_tickers(instrument_name.clone(), tickers, instrument_parts);
                 publish_aggregated(instrument_name, agg_tickers)
             }
             Err(e) => {
@@ -45,7 +46,7 @@ impl Guest for AggTicker {
 type Ccy<'a> = &'a str;
 type Expiry<'a> = &'a str;
 type OptionType<'a> = &'a str;
-type Instrument<'a> = (Ccy<'a>, Expiry<'a>, u64, OptionType<'a>);
+type Instrument<'a> = (Ccy<'a>, Expiry<'a>, f64, OptionType<'a>);
 
 fn parse_instrument_name<'a>(instrument_name: &'a str) -> Result<Instrument<'a>, String> {
     let instrument_name_parts: Vec<&str> = instrument_name.split('-').collect();
@@ -58,7 +59,7 @@ fn parse_instrument_name<'a>(instrument_name: &'a str) -> Result<Instrument<'a>,
     let ccy = instrument_name_parts[0];
     let expiry = instrument_name_parts[1];
     let strike = instrument_name_parts[2]
-        .parse::<u64>()
+        .parse::<f64>()
         .map_err(|e| format!("Failed to parse strike: {}", e))?;
     let option_type = instrument_name_parts[3];
 
@@ -66,7 +67,9 @@ fn parse_instrument_name<'a>(instrument_name: &'a str) -> Result<Instrument<'a>,
 }
 
 /// Fetch ticker data from the ticker provider
-fn get_ticker_data_from_provider(instrument_name: &str) -> Result<Vec<Ticker>, String> {
+fn get_ticker_data_from_provider(
+    instrument_name: &str,
+) -> Result<(Vec<Ticker>, Instrument), String> {
     let instrument_parts = parse_instrument_name(&instrument_name)?;
     let currency_ticker = &instrument_parts.0;
     let kind_indicator = &instrument_parts.3;
@@ -87,15 +90,22 @@ fn get_ticker_data_from_provider(instrument_name: &str) -> Result<Vec<Ticker>, S
 
     let tickers = get_tickers(&currency, instrument_kind).map_err(|e| e.to_string())?;
 
-    // Filter the tickers by instrument name
-    Ok(tickers
-        .into_iter()
-        .filter(|ticker| ticker.instrument_name == instrument_name)
-        .collect())
+    Ok((
+        // Filter the tickers by instrument name
+        tickers
+            .into_iter()
+            .filter(|ticker| ticker.instrument_name == instrument_name)
+            .collect(),
+        instrument_parts,
+    ))
 }
 
 /// Aggregate the tickers to generate aggregated ticker data
-fn aggregate_tickers(instrument_name: String, tickers: Vec<Ticker>) -> AggregatedTickers {
+fn aggregate_tickers(
+    instrument_name: String,
+    tickers: Vec<Ticker>,
+    instrument_parts: Instrument,
+) -> AggregatedTickers {
     // Aggregating best bid and ask prices and amounts
     let mut best_bids = Vec::new();
     let mut best_asks = Vec::new();
@@ -127,7 +137,7 @@ fn aggregate_tickers(instrument_name: String, tickers: Vec<Ticker>) -> Aggregate
 
     let agg_tickers = AggregatedTickers {
         instrument_name: instrument_name.to_string(),
-        strike: tickers.first().map_or(0.0, |t| t.mark_price),
+        strike: instrument_parts.2,
         kind: tickers
             .first()
             .map_or("Unknown".to_string(), |t| t.state.clone()),
