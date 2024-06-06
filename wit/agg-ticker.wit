@@ -1,4 +1,6 @@
 interface agg-ticker {
+    use jabratech:provider-ticker/ticker.{ticker};
+    use jabratech:common/types.{currency, instrument-kind};
 
     record aggregated-tickers {
         instrument-name: string,
